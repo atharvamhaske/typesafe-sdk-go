@@ -1,0 +1,3 @@
+.env
+*.test
+coverage.out

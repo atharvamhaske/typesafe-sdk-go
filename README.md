@@ -36,3 +36,12 @@ models, err := client.ListModels(ctx)
 ```
 
 Options: `WithAPIKey`, `WithBaseURL`, `WithModel`, `WithHTTPClient` on `NewClient`; `WithRequestModel` per call. Non-2xx responses return `*typesafe.Error` with `StatusCode` and validation `Detail`.
+
+## Examples
+
+Runnable examples live in [examples/](examples/):
+
+```
+TYPESAFE_API_KEY=sk-... go run ./examples/systemone
+TYPESAFE_API_KEY=sk-... go run ./examples/listmodels
+```
