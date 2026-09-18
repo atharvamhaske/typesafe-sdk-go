@@ -1,5 +1,8 @@
 # typesafe-sdk-go
 
+[![ci](https://github.com/atharvamhaske/typesafe-sdk-go/actions/workflows/ci.yml/badge.svg)](https://github.com/atharvamhaske/typesafe-sdk-go/actions/workflows/ci.yml)
+[![Go Reference](https://pkg.go.dev/badge/github.com/atharvamhaske/typesafe-sdk-go.svg)](https://pkg.go.dev/github.com/atharvamhaske/typesafe-sdk-go)
+
 Unofficial Go client for the TypeSafe AI API.
 
 ```
@@ -42,6 +45,44 @@ Options: `WithAPIKey`, `WithBaseURL`, `WithModel`, `WithHTTPClient` on `NewClien
 Runnable examples live in [examples/](examples/):
 
 ```
-TYPESAFE_API_KEY=sk-... go run ./examples/systemone
-TYPESAFE_API_KEY=sk-... go run ./examples/listmodels
+TYPESAFE_API_KEY=... go run ./examples/systemone
+TYPESAFE_API_KEY=... go run ./examples/listmodels
 ```
+
+## Verified against the live API
+
+The raw endpoint via curl:
+
+```console
+$ curl -s https://api.typesafe.ai/v1/systemone \
+    -H "Authorization: Bearer $TYPESAFE_API_KEY" \
+    -H "Content-Type: application/json" \
+    -d '{"state":"I was charged twice. Please refund the duplicate charge today.",
+         "model":"jev-latest",
+         "questions":{"category":{"type":"choice","instructions":"Categorize the message",
+           "criteria":{"billing":"Billing issue","technical":"Technical issue"}}}}'
+{
+  "model": "jev-1.13.0",
+  "answers": {
+    "category": {
+      "type": "choice",
+      "choice": "billing",
+      "confidence": 1.0,
+      "probabilities": {"billing": 1.0, "technical": 0.0}
+    }
+  },
+  "usage": {"input_tokens": 319, "output_tokens": 31}
+}
+```
+
+The same call through the SDK:
+
+```console
+$ TYPESAFE_API_KEY=... go run ./examples/systemone
+category: billing (confidence 1.00)
+urgency:  1.00
+is_dupe:  0.66
+usage:    381 in / 64 out
+```
+
+`live_test.go` runs this against the real API in CI whenever `TYPESAFE_API_KEY` is set, and skips otherwise.
