@@ -2,6 +2,17 @@
 
 Full reference: [pkg.go.dev](https://pkg.go.dev/github.com/atharvamhaske/typesafe-sdk-go)
 
+The upstream contract is in [openapi.json](openapi.json), fetched from `https://api.typesafe.ai/openapi.json`. The SDK is written by hand against this spec, with each Go type matching an upstream schema:
+
+| OpenAPI schema | Go type |
+|---|---|
+| `SystemOneRequest` | `SystemOne` parameters |
+| `ChoiceQuestion`, `ScoreQuestion`, `NoulQuestion` | `Choice`, `Score`, `Noul` |
+| `SystemOneResponse`, `Usage` | `SystemOneResponse`, `Usage` |
+| `ChoiceAnswer`, `ScoreAnswer`, `NoulAnswer` | same names |
+| `ModelMetadata`, `ModelMetadataList` | `Model`, `ListModels` result |
+| `HTTPValidationError` | `Error.Detail` |
+
 ## Client
 
 - `typesafe.NewClient(opts ...Option) (*Client, error)`
