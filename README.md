@@ -86,3 +86,7 @@ usage:    381 in / 64 out
 ```
 
 `live_test.go` runs this against the real API in CI whenever `TYPESAFE_API_KEY` is set, and skips otherwise.
+
+## Screenshot 
+
+
