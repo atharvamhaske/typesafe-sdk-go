@@ -3,7 +3,7 @@
 [![ci](https://github.com/atharvamhaske/typesafe-sdk-go/actions/workflows/ci.yml/badge.svg)](https://github.com/atharvamhaske/typesafe-sdk-go/actions/workflows/ci.yml)
 [![Go Reference](https://pkg.go.dev/badge/github.com/atharvamhaske/typesafe-sdk-go.svg)](https://pkg.go.dev/github.com/atharvamhaske/typesafe-sdk-go)
 
-Unofficial Go client for the TypeSafe AI API.
+Unofficial Go client for the TypeSafe AI API. See [api.md](api.md) for the method index and [pkg.go.dev](https://pkg.go.dev/github.com/atharvamhaske/typesafe-sdk-go) for full reference docs.
 
 ```
 go get github.com/atharvamhaske/typesafe-sdk-go
