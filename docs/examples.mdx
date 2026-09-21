@@ -42,7 +42,17 @@ These three follow patterns that show up repeatedly across the Jev community: a 
 TYPESAFE_API_KEY=... go run ./examples/spamfilter
 ```
 
-A `Noul` question per message, thresholded in code. Same shape as moderation and antispam bots like [Jev-Moderation-Bot](https://github.com/brainstormity/Jev-Moderation-Bot) or [scam-shield](https://github.com/ShupingR/scam-shield) ([live demo](https://scam-shield-seven-ecru.vercel.app)).
+A `Noul` question per message, thresholded in code. Same shape as moderation and antispam bots like [Jev-Moderation-Bot](https://github.com/brainstormity/Jev-Moderation-Bot) or [scam-shield](https://github.com/ShupingR/scam-shield).
+
+<iframe
+  src="https://scam-shield-seven-ecru.vercel.app"
+  title="scam-shield live demo"
+  loading="lazy"
+  sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
+  style={{ width: "100%", height: "500px", border: "1px solid var(--gray-a6, #33333340)", borderRadius: "8px" }}
+/>
+
+<sub>Live third-party demo, embedded from [scam-shield-seven-ecru.vercel.app](https://scam-shield-seven-ecru.vercel.app). Not affiliated with this SDK.</sub>
 
 ### PR labeler
 
@@ -58,7 +68,30 @@ A `Choice` question over a diff, labeling its conceptual scope (security, featur
 TYPESAFE_API_KEY=... go run ./examples/gamemove
 ```
 
-The game engine owns state and rules; one `Choice` question per tick picks the move. The pattern behind dozens of Jev-plays-a-game demos, including [jev-tetris](https://github.com/trungdq88/jev-tetris) ([live](https://jev-tetris.vercel.app)) and [Jev Pac-Man](https://jev-pacman.ephraimduncan.com).
+The game engine owns state and rules; one `Choice` question per tick picks the move. The pattern behind dozens of Jev-plays-a-game demos, including [jev-tetris](https://github.com/trungdq88/jev-tetris) and [Jev Pac-Man](https://jev-pacman.ephraimduncan.com).
+
+<Tabs>
+  <Tab title="jev-tetris">
+    <iframe
+      src="https://jev-tetris.vercel.app"
+      title="jev-tetris live demo"
+      loading="lazy"
+      sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
+      style={{ width: "100%", height: "500px", border: "1px solid var(--gray-a6, #33333340)", borderRadius: "8px" }}
+    />
+  </Tab>
+  <Tab title="Jev Pac-Man">
+    <iframe
+      src="https://jev-pacman.ephraimduncan.com"
+      title="Jev Pac-Man live demo"
+      loading="lazy"
+      sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
+      style={{ width: "100%", height: "500px", border: "1px solid var(--gray-a6, #33333340)", borderRadius: "8px" }}
+    />
+  </Tab>
+</Tabs>
+
+<sub>Live third-party demos. Not affiliated with this SDK.</sub>
 
 <Card title="View source on GitHub" icon="github" href="https://github.com/atharvamhaske/typesafe-sdk-go/tree/main/examples">
   Full source for every example.
