@@ -142,15 +142,41 @@ type systemOneRequest struct {
 	Questions map[string]Question `json:"questions"`
 }
 
-// SystemOne asks questions about a state via POST /v1/systemone.
+// SystemOne asks questions about a state via POST /v1/systemone. When the
+// client was built with WithCache, an identical request within the cache's
+// TTL is served without a network call.
 func (c *Client) SystemOne(ctx context.Context, state string, questions map[string]Question, opts ...SystemOneOption) (*SystemOneResponse, error) {
 	req := systemOneRequest{State: state, Model: c.model, Questions: questions}
 	for _, opt := range opts {
 		opt(&req)
 	}
-	var resp SystemOneResponse
-	if err := c.do(ctx, http.MethodPost, "/v1/systemone", req, &resp); err != nil {
+
+	var key string
+	if c.cache != nil {
+		body, err := json.Marshal(req)
+		if err != nil {
+			return nil, fmt.Errorf("typesafe: marshal request: %w", err)
+		}
+		key = cacheKey(body)
+		if cached, ok := c.cache.get(key); ok {
+			var resp SystemOneResponse
+			if err := json.Unmarshal(cached, &resp); err != nil {
+				return nil, fmt.Errorf("typesafe: decode cached response: %w", err)
+			}
+			return &resp, nil
+		}
+	}
+
+	data, err := c.doRaw(ctx, http.MethodPost, "/v1/systemone", req)
+	if err != nil {
 		return nil, err
+	}
+	var resp SystemOneResponse
+	if err := json.Unmarshal(data, &resp); err != nil {
+		return nil, fmt.Errorf("typesafe: decode response: %w", err)
+	}
+	if c.cache != nil {
+		c.cache.set(key, data)
 	}
 	return &resp, nil
 }

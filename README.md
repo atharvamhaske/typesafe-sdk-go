@@ -2,6 +2,7 @@
 
 [![ci](https://github.com/atharvamhaske/typesafe-sdk-go/actions/workflows/ci.yml/badge.svg)](https://github.com/atharvamhaske/typesafe-sdk-go/actions/workflows/ci.yml)
 [![Go Reference](https://pkg.go.dev/badge/github.com/atharvamhaske/typesafe-sdk-go.svg)](https://pkg.go.dev/github.com/atharvamhaske/typesafe-sdk-go)
+[![Go Report Card](https://goreportcard.com/badge/github.com/atharvamhaske/typesafe-sdk-go)](https://goreportcard.com/report/github.com/atharvamhaske/typesafe-sdk-go)
 [![Docs](https://img.shields.io/badge/docs-mintlify-E551BA)](https://typesafe-sdk-go.mintlify.site/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
 
@@ -115,6 +116,8 @@ The public surface is organized around one handle:
 | `WithBaseURL` | `TYPESAFE_BASE_URL` | API base URL, defaults to `https://api.typesafe.ai` |
 | `WithModel` | `TYPESAFE_DEFAULT_MODEL` | Default model, defaults to `jev-latest` |
 | `WithHTTPClient` | — | Underlying `*http.Client` |
+| `WithMaxRetries` | — | Retries for network errors, 429s, and 5xxs, honoring `Retry-After`. Default 3 |
+| `WithCache` | — | Opt-in in-memory cache for `SystemOne` responses, keyed by request body. Disabled by default |
 
 ## Error Handling
 

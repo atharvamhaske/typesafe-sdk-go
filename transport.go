@@ -7,6 +7,8 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"strconv"
+	"time"
 )
 
 // Error is a non-2xx API response.
@@ -24,40 +26,9 @@ func (e *Error) Error() string {
 }
 
 func (c *Client) do(ctx context.Context, method, path string, body, out any) error {
-	var rd io.Reader
-	if body != nil {
-		b, err := json.Marshal(body)
-		if err != nil {
-			return fmt.Errorf("typesafe: marshal request: %w", err)
-		}
-		rd = bytes.NewReader(b)
-	}
-	req, err := http.NewRequestWithContext(ctx, method, c.baseURL+path, rd)
+	data, err := c.doRaw(ctx, method, path, body)
 	if err != nil {
-		return fmt.Errorf("typesafe: build request: %w", err)
-	}
-	req.Header.Set("Authorization", "Bearer "+c.apiKey)
-	if body != nil {
-		req.Header.Set("Content-Type", "application/json")
-	}
-	resp, err := c.httpClient.Do(req)
-	if err != nil {
-		return fmt.Errorf("typesafe: %w", err)
-	}
-	defer resp.Body.Close()
-	data, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return fmt.Errorf("typesafe: read response: %w", err)
-	}
-	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
-		apiErr := &Error{StatusCode: resp.StatusCode, Body: data}
-		var ve struct {
-			Detail json.RawMessage `json:"detail"`
-		}
-		if json.Unmarshal(data, &ve) == nil {
-			apiErr.Detail = ve.Detail
-		}
-		return apiErr
+		return err
 	}
 	if out != nil {
 		if err := json.Unmarshal(data, out); err != nil {
@@ -65,4 +36,94 @@ func (c *Client) do(ctx context.Context, method, path string, body, out any) err
 		}
 	}
 	return nil
+}
+
+// doRaw performs the HTTP round trip, retrying network errors, 429s, and 5xxs
+// up to c.maxRetries times with backoff, and returns the raw success body.
+func (c *Client) doRaw(ctx context.Context, method, path string, body any) ([]byte, error) {
+	var bodyBytes []byte
+	if body != nil {
+		b, err := json.Marshal(body)
+		if err != nil {
+			return nil, fmt.Errorf("typesafe: marshal request: %w", err)
+		}
+		bodyBytes = b
+	}
+
+	for attempt := 0; ; attempt++ {
+		var rd io.Reader
+		if bodyBytes != nil {
+			rd = bytes.NewReader(bodyBytes)
+		}
+		req, err := http.NewRequestWithContext(ctx, method, c.baseURL+path, rd)
+		if err != nil {
+			return nil, fmt.Errorf("typesafe: build request: %w", err)
+		}
+		req.Header.Set("Authorization", "Bearer "+c.apiKey)
+		if bodyBytes != nil {
+			req.Header.Set("Content-Type", "application/json")
+		}
+
+		resp, err := c.httpClient.Do(req)
+		if err != nil {
+			netErr := fmt.Errorf("typesafe: %w", err)
+			if !c.retryWait(ctx, attempt, 0) {
+				return nil, netErr
+			}
+			continue
+		}
+
+		data, err := io.ReadAll(resp.Body)
+		resp.Body.Close()
+		if err != nil {
+			return nil, fmt.Errorf("typesafe: read response: %w", err)
+		}
+
+		if resp.StatusCode < 200 || resp.StatusCode >= 300 {
+			apiErr := &Error{StatusCode: resp.StatusCode, Body: data}
+			var ve struct {
+				Detail json.RawMessage `json:"detail"`
+			}
+			if json.Unmarshal(data, &ve) == nil {
+				apiErr.Detail = ve.Detail
+			}
+			if resp.StatusCode == http.StatusTooManyRequests || resp.StatusCode >= 500 {
+				if !c.retryWait(ctx, attempt, retryAfter(resp.Header.Get("Retry-After"))) {
+					return nil, apiErr
+				}
+				continue
+			}
+			return nil, apiErr
+		}
+
+		return data, nil
+	}
+}
+
+// retryWait reports whether the caller should retry, waiting out the backoff
+// first. It returns false without waiting once maxRetries is exhausted or
+// the context is done.
+func (c *Client) retryWait(ctx context.Context, attempt int, wait time.Duration) bool {
+	if attempt >= c.maxRetries {
+		return false
+	}
+	if wait <= 0 {
+		wait = time.Duration(200*(1<<attempt)) * time.Millisecond
+	}
+	select {
+	case <-ctx.Done():
+		return false
+	case <-time.After(wait):
+		return true
+	}
+}
+
+// retryAfter parses a Retry-After header given in seconds. Non-numeric
+// values (HTTP-date form) and missing headers are treated as unset.
+func retryAfter(v string) time.Duration {
+	secs, err := strconv.Atoi(v)
+	if err != nil || secs < 0 {
+		return 0
+	}
+	return time.Duration(secs) * time.Second
 }
