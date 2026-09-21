@@ -93,6 +93,32 @@ The game engine owns state and rules; one `Choice` question per tick picks the m
 
 <sub>Live third-party demos. Not affiliated with this SDK.</sub>
 
+## Shared by builders on X
+
+More Jev projects, rounded up by [Moritz Kremb](https://x.com/moritzkremb) in [this thread](https://x.com/moritzkremb/status/2100895894287839255). Credit to each builder below; these are their projects, not this SDK's.
+
+### Keystroke oracle launcher
+
+[dabit3/launcher](https://github.com/dabit3/launcher) by [Nader Dabit](https://github.com/dabit3) — a native macOS launcher that judges intent on every keystroke. Type "the pdf I just downloaded" and Jev ranks the newest PDF top, at full confidence, in about 100 ms.
+
+<Frame>
+  <img src="/images/jev-launcher-query-pdf.png" alt="dabit3/launcher: typing 'the pdf I just downloaded' ranks the newest PDF top at 100% confidence in 154 ms" />
+</Frame>
+
+### Context compaction
+
+[tamaratran/fast-jev-compaction](https://github.com/tamaratran/fast-jev-compaction) by [tamara tran](https://github.com/tamaratran) — a Claude Code plugin that replaces lossy LLM-summarized compaction with Jev decisions: every tool call and result is scored, stale ones are dropped, everything kept stays verbatim.
+
+### Ultrafast browser agent
+
+[browser-use/jev-ultrafast](https://github.com/browser-use/jev-ultrafast) by [Browser Use](https://github.com/browser-use) — Jev picks the operation and element for each browser action instead of a full LLM generation pass. Zürich → London on Google Flights in 7.1 seconds, one natural-language goal.
+
+![Browser Use jev-ultrafast: a real Google Flights search completing in 7.1 seconds](https://raw.githubusercontent.com/browser-use/jev-ultrafast/main/docs/demo.gif)
+
+### Plain-English Postgres
+
+[realZachi/pg-jev](https://github.com/realZachi/pg-jev) by [Zachi](https://github.com/realZachi) — ask a Postgres table questions in plain language; Jev turns the question into a query. See it live at [pgjev.zachi.dev](https://pgjev.zachi.dev) (not embeddable here, the site blocks iframes).
+
 <Card title="View source on GitHub" icon="github" href="https://github.com/atharvamhaske/typesafe-sdk-go/tree/main/examples">
   Full source for every example.
 </Card>
