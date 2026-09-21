@@ -2,7 +2,6 @@
 
 [![ci](https://github.com/atharvamhaske/typesafe-sdk-go/actions/workflows/ci.yml/badge.svg)](https://github.com/atharvamhaske/typesafe-sdk-go/actions/workflows/ci.yml)
 [![Go Reference](https://pkg.go.dev/badge/github.com/atharvamhaske/typesafe-sdk-go.svg)](https://pkg.go.dev/github.com/atharvamhaske/typesafe-sdk-go)
-[![Go Report Card](https://goreportcard.com/badge/github.com/atharvamhaske/typesafe-sdk-go)](https://goreportcard.com/report/github.com/atharvamhaske/typesafe-sdk-go)
 [![Docs](https://img.shields.io/badge/docs-mintlify-E551BA)](https://typesafe-sdk-go.mintlify.site/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
 
