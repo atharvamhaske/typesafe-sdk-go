@@ -1,3 +1,4 @@
 .env
 *.test
 coverage.out
+examples/braintrust/braintrust
