@@ -133,6 +133,9 @@ Runnable examples live in [examples/](examples/) and are walked through on the [
 ```bash
 TYPESAFE_API_KEY=... go run ./examples/systemone
 TYPESAFE_API_KEY=... go run ./examples/listmodels
+TYPESAFE_API_KEY=... go run ./examples/spamfilter   # Noul spam/moderation classifier
+TYPESAFE_API_KEY=... go run ./examples/prlabel      # Choice-based PR/diff labeler
+TYPESAFE_API_KEY=... go run ./examples/gamemove     # Choice-based game move picker
 ```
 
 ## Verified Against the Live API

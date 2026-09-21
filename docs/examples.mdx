@@ -3,7 +3,7 @@ title: Examples
 description: Runnable programs in the repo
 ---
 
-Both examples live under [examples/](https://github.com/atharvamhaske/typesafe-sdk-go/tree/main/examples) and run with a real API key.
+All examples live under [examples/](https://github.com/atharvamhaske/typesafe-sdk-go/tree/main/examples) and run with a real API key.
 
 ## SystemOne
 
@@ -28,6 +28,34 @@ TYPESAFE_API_KEY=... go run ./examples/listmodels
 
 Prints every model the API currently serves, with its release date and description.
 
+## Common Jev patterns
+
+These three follow patterns that show up repeatedly across the community, cataloged at [awesome-jev](https://github.com/hellogumbo/awesome-jev): a spam classifier, a PR labeler, and a game move picker.
+
+### Spam filter
+
+```bash
+TYPESAFE_API_KEY=... go run ./examples/spamfilter
+```
+
+A `Noul` question per message, thresholded in code. Same shape as moderation and antispam bots like `Jev-Moderation-Bot` or `scam-shield`.
+
+### PR labeler
+
+```bash
+TYPESAFE_API_KEY=... go run ./examples/prlabel
+```
+
+A `Choice` question over a diff, labeling its conceptual scope (security, feature, refactor, docs) instead of counting changed lines. Same pattern as `jev-pr-labeler` and `commit-miner`.
+
+### Game move picker
+
+```bash
+TYPESAFE_API_KEY=... go run ./examples/gamemove
+```
+
+The game engine owns state and rules; one `Choice` question per tick picks the move. The pattern behind dozens of Jev-plays-a-game demos, from Snake to Tetris to Pac-Man.
+
 <Card title="View source on GitHub" icon="github" href="https://github.com/atharvamhaske/typesafe-sdk-go/tree/main/examples">
-  Full source for both examples.
+  Full source for every example.
 </Card>
