@@ -1,58 +1,67 @@
 ---
 title: Use with Braintrust
-description: Trace typesafe-sdk-go calls with Braintrust or any OpenTelemetry backend
+description: Automatic tracing of typesafe-sdk-go with braintrust-sdk-go
 ---
 
-There is no dedicated `trace/contrib/typesafe` package in [braintrust-sdk-go](https://github.com/braintrustdata/braintrust-sdk-go) yet. Until one exists, wrap each `SystemOne` call in an OpenTelemetry span and set the attributes Braintrust reads for manual tracing. Any OpenTelemetry-based observability tool follows the same pattern.
+[`trace/contrib/typesafe`](https://github.com/atharvamhaske/braintrust-sdk-go/tree/feat/typesafe-tracing/trace/contrib/typesafe) is an HTTP middleware for [braintrust-sdk-go](https://github.com/braintrustdata/braintrust-sdk-go) that traces every `POST /v1/systemone` call made through this SDK. It wraps the `*http.Client` passed to `typesafe.WithHTTPClient`, so no manual span code is needed in application code.
 
-<Info>
-  Full field reference: [Braintrust OpenTelemetry docs](https://www.braintrust.dev/docs/integrations/opentelemetry#manual-tracing).
-</Info>
+<Warning>
+  This package lives on the `feat/typesafe-tracing` branch of a fork and is not merged upstream yet. The install step below points at that branch directly.
+</Warning>
+
+## Install
+
+```bash
+go get github.com/atharvamhaske/braintrust-sdk-go/trace/contrib/typesafe@feat/typesafe-tracing
+```
+
+## Usage
+
+```go
+tp := trace.NewTracerProvider()
+defer tp.Shutdown(context.Background())
+otel.SetTracerProvider(tp)
+
+bt, err := braintrust.New(tp, braintrust.WithProject("my-project"))
+if err != nil {
+    log.Fatal(err)
+}
+
+client, err := typesafe.NewClient(
+    typesafe.WithHTTPClient(bttypesafe.Client()), // reads TYPESAFE_API_KEY
+)
+if err != nil {
+    log.Fatal(err)
+}
+
+// every SystemOne call is now traced automatically
+resp, err := client.SystemOne(ctx, state, questions)
+```
 
 ## Span shape
 
-`SystemOne` is a single request/response call, so it gets one `llm` span, no children.
+The middleware matches the span shape the official Python and JS TypeSafe integrations use, not the generic `llm` shape used for chat completion providers elsewhere in braintrust-sdk-go.
 
 | Field | Value |
 | --- | --- |
-| `braintrust.input_json` | `state` and `questions` sent to the API |
-| `braintrust.output_json` | `resp.Answers` |
-| `braintrust.metadata` | `model`, `provider: "typesafe"` |
-| `braintrust.metrics` | `prompt_tokens`, `completion_tokens`, `tokens`, from `resp.Usage` |
-| `braintrust.span_attributes` | `{"type": "llm"}` |
-
-## Example
-
-```go
-tracer := otel.Tracer("typesafe-sdk-go")
-spanCtx, span := tracer.Start(ctx, "typesafe.systemone")
-defer span.End()
-
-setJSONAttr(span, "braintrust.input_json", map[string]any{"state": state, "questions": questions})
-setJSONAttr(span, "braintrust.span_attributes", map[string]string{"type": "llm"})
-
-resp, err := client.SystemOne(spanCtx, state, questions)
-if err != nil {
-    span.RecordError(err)
-    return err
-}
-
-setJSONAttr(span, "braintrust.output_json", resp.Answers)
-setJSONAttr(span, "braintrust.metadata", map[string]any{
-    "model":    resp.Model,
-    "provider": "typesafe",
-})
-setJSONAttr(span, "braintrust.metrics", map[string]any{
-    "prompt_tokens":     resp.Usage.InputTokens,
-    "completion_tokens": resp.Usage.OutputTokens,
-    "tokens":            resp.Usage.InputTokens + resp.Usage.OutputTokens,
-})
-```
+| Span name | `typesafe.systemOne` |
+| `braintrust.span_attributes.type` | `question` |
+| `braintrust.input_json` | `state`, plus `questions` as an id-tagged list |
+| `braintrust.output_json` | `answers` as an id-tagged list |
+| `braintrust.metadata` | `provider: "typesafe"`, `model` |
+| `braintrust.metrics` | `prompt_tokens`, `completion_tokens`, `tokens`, from `usage` |
 
 <Card title="Full runnable example" icon="github" href="https://github.com/atharvamhaske/typesafe-sdk-go/tree/main/examples/braintrust">
-  `examples/braintrust/main.go`, including the `setJSONAttr` helper. It has its own `go.mod`, so `braintrust-sdk-go` and OpenTelemetry stay out of the core SDK's dependency graph.
+  `examples/braintrust/main.go`. It has its own `go.mod`, so `braintrust-sdk-go` and OpenTelemetry stay out of the core SDK's dependency graph.
 </Card>
+
+## Custom TracerProvider
+
+```go
+httpClient := bttypesafe.Client(bttypesafe.WithTracerProvider(tp))
+client, err := typesafe.NewClient(typesafe.WithHTTPClient(httpClient))
+```
 
 ## Any other OpenTelemetry backend
 
-The same span works for Datadog, Honeycomb, or a raw OTel collector. Only the `braintrust.*` attribute names are Braintrust-specific — swap them for the attribute convention your backend expects, and set an exporter on the `TracerProvider` instead of `braintrust.New`.
+The middleware sets standard OpenTelemetry span attributes, so it works with Datadog, Honeycomb, or a raw OTel collector too. Only the `braintrust.*` attribute names are Braintrust-specific.

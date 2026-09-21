@@ -1,3 +1,5 @@
+github.com/atharvamhaske/braintrust-sdk-go/trace/contrib/typesafe v0.0.0-20260918200247-a921623757d9 h1:T5lrl8E3nXbYMfvTre79IDSoFZoNcabAJM1i04o2J/g=
+github.com/atharvamhaske/braintrust-sdk-go/trace/contrib/typesafe v0.0.0-20260918200247-a921623757d9/go.mod h1:UQp8ajn22DHRZGjkg+jMp5+OMZs5S9lL+pSUIAeMwrs=
 github.com/braintrustdata/braintrust-sdk-go v0.14.0 h1:jp21fvq/EdJSO20L0O+1xF/Wugznask9hxNWP8cFcKQ=
 github.com/braintrustdata/braintrust-sdk-go v0.14.0/go.mod h1:bUtVPn0Se5f1MpSZH42Z2+z+9A0ulfVBKH8mSD5u2E4=
 github.com/cenkalti/backoff/v5 v5.0.3 h1:ZN+IMa753KfX5hd8vVaMixjnqRZ3y8CuJKRKj1xcsSM=

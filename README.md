@@ -175,7 +175,13 @@ usage:    381 in / 64 out
 
 ## Use with Braintrust
 
-No `trace/contrib/typesafe` middleware exists yet in [braintrust-sdk-go](https://github.com/braintrustdata/braintrust-sdk-go). Until one does, wrap `SystemOne` calls in an OpenTelemetry span and set the `braintrust.*` attributes manually. See the [Use with Braintrust](https://typesafe-sdk-go.mintlify.site/use-with-braintrust) docs page for the field reference, and [examples/braintrust](examples/braintrust) for a full runnable example. That example has its own `go.mod`, so `braintrust-sdk-go` and OpenTelemetry stay out of the core SDK's dependency graph.
+[`trace/contrib/typesafe`](https://github.com/atharvamhaske/braintrust-sdk-go/tree/feat/typesafe-tracing/trace/contrib/typesafe) automatically traces every `SystemOne` call through `typesafe.WithHTTPClient`, matching the span shape the official Python and JS TypeSafe integrations use. It is not merged upstream yet, so install it from the fork branch:
+
+```bash
+go get github.com/atharvamhaske/braintrust-sdk-go/trace/contrib/typesafe@feat/typesafe-tracing
+```
+
+See the [Use with Braintrust](https://typesafe-sdk-go.mintlify.site/use-with-braintrust) docs page for the field reference, and [examples/braintrust](examples/braintrust) for a full runnable example. That example has its own `go.mod`, so `braintrust-sdk-go` and OpenTelemetry stay out of the core SDK's dependency graph.
 
 ```bash
 cd examples/braintrust

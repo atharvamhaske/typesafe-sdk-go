@@ -9,10 +9,12 @@ require (
 	github.com/braintrustdata/braintrust-sdk-go v0.14.0
 	go.opentelemetry.io/otel v1.46.0
 	go.opentelemetry.io/otel/sdk v1.46.0
-	go.opentelemetry.io/otel/trace v1.46.0
 )
 
+require go.opentelemetry.io/otel/trace v1.46.0 // indirect
+
 require (
+	github.com/braintrustdata/braintrust-sdk-go/trace/contrib/typesafe v0.0.0-20260918200247-a921623757d9
 	github.com/cenkalti/backoff/v5 v5.0.3 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
 	github.com/go-logr/logr v1.4.4 // indirect
@@ -33,3 +35,5 @@ require (
 	google.golang.org/grpc v1.82.1 // indirect
 	google.golang.org/protobuf v1.36.11 // indirect
 )
+
+replace github.com/braintrustdata/braintrust-sdk-go/trace/contrib/typesafe => github.com/atharvamhaske/braintrust-sdk-go/trace/contrib/typesafe v0.0.0-20260918200247-a921623757d9
