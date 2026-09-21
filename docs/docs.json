@@ -19,7 +19,7 @@
           },
           {
             "group": "Reference",
-            "pages": ["api-reference", "examples", "use-with-braintrust"]
+            "pages": ["api-reference", "examples", "use-with-braintrust", "changelog"]
           }
         ]
       }

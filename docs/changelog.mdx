@@ -1,0 +1,26 @@
+---
+title: Changelog
+description: Release history
+---
+
+The changelog lives in the repo, so it never drifts from what's actually tagged.
+
+<Card title="CHANGELOG.md" icon="github" href="https://github.com/atharvamhaske/typesafe-sdk-go/blob/main/CHANGELOG.md">
+  Full release history, in Keep a Changelog format.
+</Card>
+
+<Card title="GitHub Releases" icon="tag" href="https://github.com/atharvamhaske/typesafe-sdk-go/releases">
+  Tagged releases with the same notes, plus source archives.
+</Card>
+
+## Latest: v0.2.0
+
+**Added**
+- Retries with backoff for network errors, 429s, and 5xxs, honoring `Retry-After` (`WithMaxRetries`, default 3)
+- Opt-in in-memory cache for `SystemOne` responses, keyed on the request body (`WithCache`)
+
+**Docs**
+- Hosted docs site restructured to match the official Python SDK and other Go SDKs' conventions
+- References section linking the official TS/Python SDKs and the OpenAPI spec
+- Braintrust tracing guide, using the real `trace/contrib/typesafe` middleware
+- Community-pattern examples, each marked as unrelated to this SDK where the linked project isn't Go
