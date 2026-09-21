@@ -2,9 +2,10 @@
 
 [![ci](https://github.com/atharvamhaske/typesafe-sdk-go/actions/workflows/ci.yml/badge.svg)](https://github.com/atharvamhaske/typesafe-sdk-go/actions/workflows/ci.yml)
 [![Go Reference](https://pkg.go.dev/badge/github.com/atharvamhaske/typesafe-sdk-go.svg)](https://pkg.go.dev/github.com/atharvamhaske/typesafe-sdk-go)
+[![Docs](https://img.shields.io/badge/docs-mintlify-E551BA)](https://typesafe-sdk-go.mintlify.site/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
 
-An unofficial Go SDK for [TypeSafe](https://typesafe.ai).
+An unofficial Go SDK for [TypeSafe](https://typesafe.ai). Full docs: **[typesafe-sdk-go.mintlify.site](https://typesafe-sdk-go.mintlify.site/)**.
 
 `typesafe-sdk-go` gives Go applications access to the same `SystemOne` question-answering workflow that exists in the official Python and JavaScript SDKs: typed choice, score, and noul questions, a typed answer union, and model discovery.
 
@@ -33,6 +34,8 @@ This project is in **beta**.
 ```bash
 go get github.com/atharvamhaske/typesafe-sdk-go
 ```
+
+See the [quickstart](https://typesafe-sdk-go.mintlify.site/quickstart) for a walkthrough.
 
 ## Quickstart
 
@@ -98,7 +101,7 @@ func main() {
 
 ## Package Overview
 
-For full API documentation, see [api.md](api.md) or [pkg.go.dev](https://pkg.go.dev/github.com/atharvamhaske/typesafe-sdk-go).
+For full API documentation, see the [docs site](https://typesafe-sdk-go.mintlify.site/api-reference), [api.md](api.md), or [pkg.go.dev](https://pkg.go.dev/github.com/atharvamhaske/typesafe-sdk-go).
 
 The public surface is organized around one handle:
 
@@ -125,7 +128,7 @@ Non-2xx responses return `*typesafe.Error`:
 
 ## Examples
 
-Runnable examples live in [examples/](examples/):
+Runnable examples live in [examples/](examples/) and are walked through on the [examples page](https://typesafe-sdk-go.mintlify.site/examples):
 
 ```bash
 TYPESAFE_API_KEY=... go run ./examples/systemone
@@ -172,7 +175,7 @@ usage:    381 in / 64 out
 
 ## Use with Braintrust
 
-No `trace/contrib/typesafe` middleware exists yet in [braintrust-sdk-go](https://github.com/braintrustdata/braintrust-sdk-go). Until one does, wrap `SystemOne` calls in an OpenTelemetry span and set the `braintrust.*` attributes manually. See [docs/use-with-braintrust.mdx](docs/use-with-braintrust.mdx) for the field reference, and [examples/braintrust](examples/braintrust) for a full runnable example. That example has its own `go.mod`, so `braintrust-sdk-go` and OpenTelemetry stay out of the core SDK's dependency graph.
+No `trace/contrib/typesafe` middleware exists yet in [braintrust-sdk-go](https://github.com/braintrustdata/braintrust-sdk-go). Until one does, wrap `SystemOne` calls in an OpenTelemetry span and set the `braintrust.*` attributes manually. See the [Use with Braintrust](https://typesafe-sdk-go.mintlify.site/use-with-braintrust) docs page for the field reference, and [examples/braintrust](examples/braintrust) for a full runnable example. That example has its own `go.mod`, so `braintrust-sdk-go` and OpenTelemetry stay out of the core SDK's dependency graph.
 
 ```bash
 cd examples/braintrust
