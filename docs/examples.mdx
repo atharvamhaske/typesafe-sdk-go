@@ -1,0 +1,33 @@
+---
+title: Examples
+description: Runnable programs in the repo
+---
+
+Both examples live under [examples/](https://github.com/atharvamhaske/typesafe-sdk-go/tree/main/examples) and run with a real API key.
+
+## SystemOne
+
+```bash
+TYPESAFE_API_KEY=... go run ./examples/systemone
+```
+
+Asks all three question types (Choice, Score, Noul) about a support message and prints the typed answers plus token usage.
+
+```console
+category: billing (confidence 1.00)
+urgency:  1.00
+is_dupe:  0.66
+usage:    381 in / 64 out
+```
+
+## ListModels
+
+```bash
+TYPESAFE_API_KEY=... go run ./examples/listmodels
+```
+
+Prints every model the API currently serves, with its release date and description.
+
+<Card title="View source on GitHub" icon="github" href="https://github.com/atharvamhaske/typesafe-sdk-go/tree/main/examples">
+  Full source for both examples.
+</Card>

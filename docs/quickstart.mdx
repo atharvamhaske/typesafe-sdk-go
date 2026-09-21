@@ -1,0 +1,55 @@
+---
+title: Quickstart
+description: Install the SDK and make your first request
+---
+
+## Install
+
+<Tabs>
+  <Tab title="go get">
+    ```bash
+    go get github.com/atharvamhaske/typesafe-sdk-go
+    ```
+  </Tab>
+  <Tab title="go.mod">
+    ```go
+    require github.com/atharvamhaske/typesafe-sdk-go latest
+    ```
+  </Tab>
+</Tabs>
+
+## Set your API key
+
+```bash
+export TYPESAFE_API_KEY=sk-...
+```
+
+`NewClient` reads `TYPESAFE_API_KEY`, `TYPESAFE_BASE_URL`, and `TYPESAFE_DEFAULT_MODEL` from the environment. Override any of them with `WithAPIKey`, `WithBaseURL`, or `WithModel`.
+
+## Ask a question
+
+```go
+client, err := typesafe.NewClient()
+if err != nil {
+    log.Fatal(err)
+}
+
+resp, err := client.SystemOne(ctx, "I was charged twice. Please refund the duplicate charge today.",
+    map[string]typesafe.Question{
+        "category": typesafe.Choice{
+            Instructions: "Categorize the message",
+            Criteria: map[string]string{
+                "billing": "Billing issue", "technical": "Technical issue",
+            },
+        },
+    })
+if err != nil {
+    log.Fatal(err)
+}
+
+fmt.Println(resp.Choices()["category"].Choice) // "billing"
+```
+
+<Card title="See the full example" icon="arrow-right" href="/examples">
+  A complete program with all three question types (Choice, Score, Noul).
+</Card>

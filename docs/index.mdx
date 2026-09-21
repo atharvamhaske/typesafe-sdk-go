@@ -1,0 +1,30 @@
+---
+title: typesafe-sdk-go
+description: Unofficial Go client for the TypeSafe AI API
+---
+
+typesafe-sdk-go is an unofficial Go client for the [TypeSafe AI](https://typesafe.ai) API. It wraps the `/v1/systemone` and `/v1/models` endpoints with typed question and answer types, so you get compile-time safety instead of raw maps.
+
+<CardGroup cols={2}>
+  <Card title="Quickstart" icon="rocket" href="/quickstart">
+    Install the SDK and make your first call.
+  </Card>
+  <Card title="API Reference" icon="book" href="/api-reference">
+    Every type, option, and method.
+  </Card>
+  <Card title="Examples" icon="code" href="/examples">
+    Runnable programs in the repo.
+  </Card>
+  <Card title="GitHub" icon="github" href="https://github.com/atharvamhaske/typesafe-sdk-go">
+    Source code and issues.
+  </Card>
+</CardGroup>
+
+## Why this exists
+
+TypeSafe ships official SDKs for Python and JavaScript. No Go SDK existed, so this fills that gap with the same shape: a `Client`, typed question builders, and a typed response.
+
+## Requirements
+
+- Go 1.21 or later
+- A TypeSafe API key, set as `TYPESAFE_API_KEY`

@@ -2,54 +2,137 @@
 
 [![ci](https://github.com/atharvamhaske/typesafe-sdk-go/actions/workflows/ci.yml/badge.svg)](https://github.com/atharvamhaske/typesafe-sdk-go/actions/workflows/ci.yml)
 [![Go Reference](https://pkg.go.dev/badge/github.com/atharvamhaske/typesafe-sdk-go.svg)](https://pkg.go.dev/github.com/atharvamhaske/typesafe-sdk-go)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
 
-Unofficial Go client for the TypeSafe AI API. See [api.md](api.md) for the method index and [pkg.go.dev](https://pkg.go.dev/github.com/atharvamhaske/typesafe-sdk-go) for full reference docs.
+An unofficial Go SDK for [TypeSafe](https://typesafe.ai).
 
-```
+`typesafe-sdk-go` gives Go applications access to the same `SystemOne` question-answering workflow that exists in the official Python and JavaScript SDKs: typed choice, score, and noul questions, a typed answer union, and model discovery.
+
+## Why This Exists
+
+TypeSafe ships official SDKs for Python and JavaScript, but there is no first-class Go SDK today. This project fills that gap with a Go-native client, built to the same wire contract as the other two.
+
+This project is unofficial and is not affiliated with or endorsed by TypeSafe. If an official Go SDK lands upstream, this repo should ideally become unnecessary.
+
+## Status
+
+This project is in **beta**.
+
+- Both API endpoints (`/v1/systemone`, `/v1/models`) are implemented.
+- `go test ./...` passes against local fixtures with no network access.
+- A live test (`live_test.go`) is verified against the real API and runs in CI when `TYPESAFE_API_KEY` is set.
+- The SDK is checked against the upstream OpenAPI spec, committed at [openapi.json](openapi.json).
+
+## Requirements
+
+- Go 1.21+
+- A TypeSafe API key
+
+## Installation
+
+```bash
 go get github.com/atharvamhaske/typesafe-sdk-go
 ```
 
-## Usage
+## Quickstart
 
-```go
-client, err := typesafe.NewClient() // reads TYPESAFE_API_KEY, TYPESAFE_BASE_URL, TYPESAFE_DEFAULT_MODEL
-if err != nil {
-    log.Fatal(err)
-}
-
-resp, err := client.SystemOne(ctx, "I was charged twice. Please refund the duplicate charge today.",
-    map[string]typesafe.Question{
-        "category": typesafe.Choice{Instructions: "Categorize the message", Criteria: map[string]string{
-            "billing": "Billing issue", "technical": "Technical issue",
-        }},
-        "urgency": typesafe.Score{Instructions: "Rate urgency", Criteria: []string{"Can wait", "Needs attention"}},
-        "is_dupe": typesafe.Noul{Instructions: "Is this a duplicate charge?", Criteria: map[string]string{
-            "true": "Duplicate", "false": "Not a duplicate",
-        }},
-    })
-if err != nil {
-    log.Fatal(err)
-}
-
-fmt.Println(resp.Choices()["category"].Choice) // "billing"
-fmt.Println(resp.Scores()["urgency"].Score)    // 1.7
-fmt.Println(resp.Nouls()["is_dupe"].Noul)      // 0.98
-
-models, err := client.ListModels(ctx)
+```bash
+export TYPESAFE_API_KEY=sk-...
 ```
 
-Options: `WithAPIKey`, `WithBaseURL`, `WithModel`, `WithHTTPClient` on `NewClient`; `WithRequestModel` per call. Non-2xx responses return `*typesafe.Error` with `StatusCode` and validation `Detail`.
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+	"log"
+
+	typesafe "github.com/atharvamhaske/typesafe-sdk-go"
+)
+
+func main() {
+	client, err := typesafe.NewClient() // reads TYPESAFE_API_KEY
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	resp, err := client.SystemOne(context.Background(),
+		"I was charged twice. Please refund the duplicate charge today.",
+		map[string]typesafe.Question{
+			"category": typesafe.Choice{
+				Instructions: "Categorize the message",
+				Criteria:     map[string]string{"billing": "Billing issue", "technical": "Technical issue"},
+			},
+			"urgency": typesafe.Score{
+				Instructions: "Rate urgency",
+				Criteria:     []string{"Can wait", "Needs attention"},
+			},
+			"is_dupe": typesafe.Noul{
+				Instructions: "Is this a duplicate charge?",
+				Criteria:     map[string]string{"true": "Duplicate", "false": "Not a duplicate"},
+			},
+		})
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println(resp.Choices()["category"].Choice) // "billing"
+	fmt.Println(resp.Scores()["urgency"].Score)    // 1.7
+	fmt.Println(resp.Nouls()["is_dupe"].Noul)      // 0.98
+}
+```
+
+## Feature Coverage
+
+### SystemOne
+
+- Typed `Choice`, `Score`, and `Noul` question builders
+- Typed answer union, decoded from the API's discriminated response
+- Per-call model override with `WithRequestModel`
+- Token usage on every response
+
+### Models
+
+- List available models with `ListModels`
+
+## Package Overview
+
+For full API documentation, see [api.md](api.md) or [pkg.go.dev](https://pkg.go.dev/github.com/atharvamhaske/typesafe-sdk-go).
+
+The public surface is organized around one handle:
+
+- `Client` for both `SystemOne` and `ListModels`, configured with functional options
+
+## Configuration
+
+| Option | Env var | Purpose |
+| --- | --- | --- |
+| `WithAPIKey` | `TYPESAFE_API_KEY` | API key, required |
+| `WithBaseURL` | `TYPESAFE_BASE_URL` | API base URL, defaults to `https://api.typesafe.ai` |
+| `WithModel` | `TYPESAFE_DEFAULT_MODEL` | Default model, defaults to `jev-latest` |
+| `WithHTTPClient` | — | Underlying `*http.Client` |
+
+## Error Handling
+
+Non-2xx responses return `*typesafe.Error`:
+
+| Field | Purpose |
+| --- | --- |
+| `StatusCode` | HTTP status code |
+| `Detail` | Validation detail, when the API returns one |
+| `Body` | Raw response body |
 
 ## Examples
 
 Runnable examples live in [examples/](examples/):
 
-```
+```bash
 TYPESAFE_API_KEY=... go run ./examples/systemone
 TYPESAFE_API_KEY=... go run ./examples/listmodels
 ```
 
-## Verified against the live API
+## Verified Against the Live API
 
 The raw endpoint via curl:
 
@@ -85,9 +168,25 @@ is_dupe:  0.66
 usage:    381 in / 64 out
 ```
 
-`live_test.go` runs this against the real API in CI whenever `TYPESAFE_API_KEY` is set, and skips otherwise.
-
-## Screenshot
-
 ![SystemOne and ListModels examples running against the live TypeSafe API](images/test.png)
 
+## Testing
+
+```bash
+go test ./...                                    # fixture tests, no network
+TYPESAFE_API_KEY=... go test ./...               # includes the live API test
+```
+
+## Contributing
+
+Issues and pull requests are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md).
+
+If you want to extend surface area or align behavior with the upstream SDKs, opening an issue first is helpful so the API shape can stay coherent.
+
+## Relationship to Upstream
+
+This repository exists because there is no official Go SDK at the time of writing. If the TypeSafe team decides to ship or adopt one upstream, aligning this project with that effort would be the best long-term outcome.
+
+## License
+
+MIT. See [LICENSE](LICENSE).

@@ -1,0 +1,40 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "mint",
+  "name": "typesafe-sdk-go",
+  "colors": {
+    "primary": "#00A3FF",
+    "light": "#3DB8FF",
+    "dark": "#0072B8"
+  },
+  "favicon": "/favicon.svg",
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Docs",
+        "groups": [
+          {
+            "group": "Get Started",
+            "pages": ["index", "quickstart"]
+          },
+          {
+            "group": "Reference",
+            "pages": ["api-reference", "examples"]
+          }
+        ]
+      }
+    ]
+  },
+  "navbar": {
+    "links": [
+      {
+        "label": "GitHub",
+        "href": "https://github.com/atharvamhaske/typesafe-sdk-go"
+      },
+      {
+        "label": "pkg.go.dev",
+        "href": "https://pkg.go.dev/github.com/atharvamhaske/typesafe-sdk-go"
+      }
+    ]
+  }
+}

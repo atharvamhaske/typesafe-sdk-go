@@ -1,0 +1,87 @@
+---
+title: API Reference
+description: Client, questions, answers, and errors
+---
+
+Full generated reference: [pkg.go.dev](https://pkg.go.dev/github.com/atharvamhaske/typesafe-sdk-go). The upstream contract is in [openapi.json](https://github.com/atharvamhaske/typesafe-sdk-go/blob/main/openapi.json), fetched from `https://api.typesafe.ai/openapi.json`.
+
+## Client
+
+```go
+client, err := typesafe.NewClient(opts ...Option)
+```
+
+<ParamField path="WithAPIKey" type="Option">
+  Sets the API key, overriding `TYPESAFE_API_KEY`.
+</ParamField>
+<ParamField path="WithBaseURL" type="Option">
+  Sets the base URL, overriding `TYPESAFE_BASE_URL`.
+</ParamField>
+<ParamField path="WithModel" type="Option">
+  Sets the default model, overriding `TYPESAFE_DEFAULT_MODEL`.
+</ParamField>
+<ParamField path="WithHTTPClient" type="Option">
+  Sets the underlying `*http.Client`.
+</ParamField>
+
+## SystemOne
+
+`POST /v1/systemone`
+
+```go
+resp, err := client.SystemOne(ctx, state string, questions map[string]Question, opts ...SystemOneOption)
+```
+
+`typesafe.WithRequestModel(model string)` overrides the model for a single call.
+
+### Question types
+
+All three implement the `Question` interface.
+
+<ParamField path="Choice" type="struct">
+  `Instructions string`, `Criteria map[string]string`. Picks one named option.
+</ParamField>
+<ParamField path="Score" type="struct">
+  `Instructions string`, `Criteria []string`. Rates on an ordered scale.
+</ParamField>
+<ParamField path="Noul" type="struct">
+  `Instructions string`, `Criteria map[string]string`. Answers true or false with a probability.
+</ParamField>
+
+### Response
+
+<ResponseField name="Model" type="string" />
+<ResponseField name="Usage" type="Usage">
+  `InputTokens`, `OutputTokens`
+</ResponseField>
+<ResponseField name="Choices()" type="map[string]ChoiceAnswer">
+  `Choice`, `Confidence`, `Probabilities`
+</ResponseField>
+<ResponseField name="Scores()" type="map[string]ScoreAnswer">
+  `Score`, `Confidence`, `Legend`, `Probabilities`
+</ResponseField>
+<ResponseField name="Nouls()" type="map[string]NoulAnswer">
+  `Noul`
+</ResponseField>
+
+## ListModels
+
+`GET /v1/models`
+
+```go
+models, err := client.ListModels(ctx)
+```
+
+Returns `[]Model`, each with `Name`, `Description`, `ReleaseDate`.
+
+## Errors
+
+Non-2xx responses return `*typesafe.Error`:
+
+<ResponseField name="StatusCode" type="int" />
+<ResponseField name="Detail" type="json.RawMessage">
+  Validation detail, when the API returns one.
+</ResponseField>
+<ResponseField name="Body" type="[]byte">
+  The raw response body.
+</ResponseField>
