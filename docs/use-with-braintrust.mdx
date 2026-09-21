@@ -1,0 +1,58 @@
+---
+title: Use with Braintrust
+description: Trace typesafe-sdk-go calls with Braintrust or any OpenTelemetry backend
+---
+
+There is no dedicated `trace/contrib/typesafe` package in [braintrust-sdk-go](https://github.com/braintrustdata/braintrust-sdk-go) yet. Until one exists, wrap each `SystemOne` call in an OpenTelemetry span and set the attributes Braintrust reads for manual tracing. Any OpenTelemetry-based observability tool follows the same pattern.
+
+<Info>
+  Full field reference: [Braintrust OpenTelemetry docs](https://www.braintrust.dev/docs/integrations/opentelemetry#manual-tracing).
+</Info>
+
+## Span shape
+
+`SystemOne` is a single request/response call, so it gets one `llm` span, no children.
+
+| Field | Value |
+| --- | --- |
+| `braintrust.input_json` | `state` and `questions` sent to the API |
+| `braintrust.output_json` | `resp.Answers` |
+| `braintrust.metadata` | `model`, `provider: "typesafe"` |
+| `braintrust.metrics` | `prompt_tokens`, `completion_tokens`, `tokens`, from `resp.Usage` |
+| `braintrust.span_attributes` | `{"type": "llm"}` |
+
+## Example
+
+```go
+tracer := otel.Tracer("typesafe-sdk-go")
+spanCtx, span := tracer.Start(ctx, "typesafe.systemone")
+defer span.End()
+
+setJSONAttr(span, "braintrust.input_json", map[string]any{"state": state, "questions": questions})
+setJSONAttr(span, "braintrust.span_attributes", map[string]string{"type": "llm"})
+
+resp, err := client.SystemOne(spanCtx, state, questions)
+if err != nil {
+    span.RecordError(err)
+    return err
+}
+
+setJSONAttr(span, "braintrust.output_json", resp.Answers)
+setJSONAttr(span, "braintrust.metadata", map[string]any{
+    "model":    resp.Model,
+    "provider": "typesafe",
+})
+setJSONAttr(span, "braintrust.metrics", map[string]any{
+    "prompt_tokens":     resp.Usage.InputTokens,
+    "completion_tokens": resp.Usage.OutputTokens,
+    "tokens":            resp.Usage.InputTokens + resp.Usage.OutputTokens,
+})
+```
+
+<Card title="Full runnable example" icon="github" href="https://github.com/atharvamhaske/typesafe-sdk-go/tree/main/examples/braintrust">
+  `examples/braintrust/main.go`, including the `setJSONAttr` helper. It has its own `go.mod`, so `braintrust-sdk-go` and OpenTelemetry stay out of the core SDK's dependency graph.
+</Card>
+
+## Any other OpenTelemetry backend
+
+The same span works for Datadog, Honeycomb, or a raw OTel collector. Only the `braintrust.*` attribute names are Braintrust-specific — swap them for the attribute convention your backend expects, and set an exporter on the `TracerProvider` instead of `braintrust.New`.

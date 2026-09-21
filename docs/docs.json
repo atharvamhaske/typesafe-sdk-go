@@ -3,9 +3,9 @@
   "theme": "mint",
   "name": "typesafe-sdk-go",
   "colors": {
-    "primary": "#00A3FF",
-    "light": "#3DB8FF",
-    "dark": "#0072B8"
+    "primary": "#E551BA",
+    "light": "#F080D2",
+    "dark": "#B83A93"
   },
   "favicon": "/favicon.svg",
   "navigation": {
@@ -19,7 +19,7 @@
           },
           {
             "group": "Reference",
-            "pages": ["api-reference", "examples"]
+            "pages": ["api-reference", "examples", "use-with-braintrust"]
           }
         ]
       }

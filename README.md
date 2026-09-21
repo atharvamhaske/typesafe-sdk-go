@@ -170,6 +170,15 @@ usage:    381 in / 64 out
 
 ![SystemOne and ListModels examples running against the live TypeSafe API](images/test.png)
 
+## Use with Braintrust
+
+No `trace/contrib/typesafe` middleware exists yet in [braintrust-sdk-go](https://github.com/braintrustdata/braintrust-sdk-go). Until one does, wrap `SystemOne` calls in an OpenTelemetry span and set the `braintrust.*` attributes manually. See [docs/use-with-braintrust.mdx](docs/use-with-braintrust.mdx) for the field reference, and [examples/braintrust](examples/braintrust) for a full runnable example. That example has its own `go.mod`, so `braintrust-sdk-go` and OpenTelemetry stay out of the core SDK's dependency graph.
+
+```bash
+cd examples/braintrust
+BRAINTRUST_API_KEY=... TYPESAFE_API_KEY=... go run .
+```
+
 ## Testing
 
 ```bash
