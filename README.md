@@ -208,6 +208,13 @@ If you want to extend surface area or align behavior with the upstream SDKs, ope
 
 This repository exists because there is no official Go SDK at the time of writing. If the TypeSafe team decides to ship or adopt one upstream, aligning this project with that effort would be the best long-term outcome.
 
+## References
+
+- [TypeSafe documentation](https://docs.typesafe.ai)
+- [Official JavaScript SDK](https://github.com/typesafe-ai/typesafe-sdk-js)
+- [Official Python SDK](https://github.com/typesafe-ai/typesafe-sdk-python)
+- [TypeSafe OpenAPI specification](https://api.typesafe.ai/openapi.json), also committed at [openapi.json](openapi.json)
+
 ## License
 
 MIT. See [LICENSE](LICENSE).
