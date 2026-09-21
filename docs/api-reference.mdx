@@ -23,6 +23,30 @@ client, err := typesafe.NewClient(opts ...Option)
 <ParamField path="WithHTTPClient" type="Option">
   Sets the underlying `*http.Client`.
 </ParamField>
+<ParamField path="WithMaxRetries" type="Option">
+  Sets the retry count for network errors, 429s, and 5xxs. Default 3.
+</ParamField>
+<ParamField path="WithCache" type="Option">
+  Turns on an in-memory cache for `SystemOne` responses. Off by default.
+</ParamField>
+
+## Caching, from first principles
+
+A decision has a shelf life. The same question, asked about the same state, has one right answer until the state changes. A cache stores that answer, keyed on the full request, not on the words used to ask for it.
+
+The cache is off by default. A stale decision looks exactly like a fresh one, and the cost of acting on a wrong decision is usually higher than the cost of one repeated API call. Turn the cache on only when you know a state repeats, and a few seconds of staleness is acceptable.
+
+The cache check runs before the network call, not after. A cache hit skips the retry loop too, since there is no network call to retry.
+
+`SystemOne` is the only cached call. `ListModels` rarely changes and is rarely called, so it is not worth a cache entry. An error response is never cached: an error is not a decision.
+
+<CodeGroup>
+```go client.go
+client, err := typesafe.NewClient(
+    typesafe.WithCache(1000, 5*time.Minute), // 1000 entries, 5-minute TTL
+)
+```
+</CodeGroup>
 
 ## SystemOne
 

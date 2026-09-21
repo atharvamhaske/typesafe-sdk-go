@@ -30,7 +30,11 @@ Prints every model the API currently serves, with its release date and descripti
 
 ## Common Jev patterns
 
-These three follow patterns that show up repeatedly across the community, cataloged at [awesome-jev](https://github.com/hellogumbo/awesome-jev): a spam classifier, a PR labeler, and a game move picker.
+These three follow patterns that show up repeatedly across the Jev community: a spam classifier, a PR labeler, and a game move picker. Each links to real, independent projects that use the pattern, not a copy of their code.
+
+<Card title="awesome-jev" icon="github" href="https://github.com/hellogumbo/awesome-jev">
+  Community directory of 800+ Jev projects. Every linked project below was found there — credit to its maintainers and contributors for cataloging them.
+</Card>
 
 ### Spam filter
 
@@ -38,7 +42,7 @@ These three follow patterns that show up repeatedly across the community, catalo
 TYPESAFE_API_KEY=... go run ./examples/spamfilter
 ```
 
-A `Noul` question per message, thresholded in code. Same shape as moderation and antispam bots like `Jev-Moderation-Bot` or `scam-shield`.
+A `Noul` question per message, thresholded in code. Same shape as moderation and antispam bots like [Jev-Moderation-Bot](https://github.com/brainstormity/Jev-Moderation-Bot) or [scam-shield](https://github.com/ShupingR/scam-shield) ([live demo](https://scam-shield-seven-ecru.vercel.app)).
 
 ### PR labeler
 
@@ -46,7 +50,7 @@ A `Noul` question per message, thresholded in code. Same shape as moderation and
 TYPESAFE_API_KEY=... go run ./examples/prlabel
 ```
 
-A `Choice` question over a diff, labeling its conceptual scope (security, feature, refactor, docs) instead of counting changed lines. Same pattern as `jev-pr-labeler` and `commit-miner`.
+A `Choice` question over a diff, labeling its conceptual scope (security, feature, refactor, docs) instead of counting changed lines. Same pattern as [jev-pr-labeler](https://github.com/1jehuang/jev-pr-labeler) and [commit-miner](https://github.com/devanshbatham/commit-miner).
 
 ### Game move picker
 
@@ -54,7 +58,7 @@ A `Choice` question over a diff, labeling its conceptual scope (security, featur
 TYPESAFE_API_KEY=... go run ./examples/gamemove
 ```
 
-The game engine owns state and rules; one `Choice` question per tick picks the move. The pattern behind dozens of Jev-plays-a-game demos, from Snake to Tetris to Pac-Man.
+The game engine owns state and rules; one `Choice` question per tick picks the move. The pattern behind dozens of Jev-plays-a-game demos, including [jev-tetris](https://github.com/trungdq88/jev-tetris) ([live](https://jev-tetris.vercel.app)) and [Jev Pac-Man](https://jev-pacman.ephraimduncan.com).
 
 <Card title="View source on GitHub" icon="github" href="https://github.com/atharvamhaske/typesafe-sdk-go/tree/main/examples">
   Full source for every example.
